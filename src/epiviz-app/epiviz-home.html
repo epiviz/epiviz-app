@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="epiviz-button.html">
+<link rel="import" href="epiviz-image.html"> -->
+
+<dom-module id="epiviz-home">
+
+  <template>
+
+    <style>
+    </style>
+
+    <div>
+        Hello from epiviz-home
+        </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'epiviz-home',
+
+      properties: {
+
+        categories: {
+          type: Array
+        },
+
+        visible: {
+          type: Boolean,
+          observer: '_visibleChanged'
+        }
+
+      },
+
+      _visibleChanged: function(visible) {
+        if (visible) {
+          this.dispatchEvent(new CustomEvent('change-section', {
+            bubbles: true, composed: true, detail: {title: 'Home'}}));
+        }
+      }
+    });
+
+  </script>
+
+</dom-module>
