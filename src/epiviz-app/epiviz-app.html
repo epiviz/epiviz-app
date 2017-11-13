@@ -38,6 +38,7 @@
       app-toolbar {
         color: #4285f4;
         background-color: #efefef;
+        height: auto;
       }
 
       paper-icon-button {
@@ -79,6 +80,11 @@
         padding-top: 64px;
       }
 
+      .headerActions {
+        font-size: 15px;
+        padding-left: 0px;
+        float: left;
+      }
     </style>
 
     <!-- TODO: Use routes int he future for loading workspacs and have a home page -->
@@ -100,14 +106,16 @@
       <app-toolbar>
         <a href="http://epiviz.github.io" target="_blank"><img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21"></a>          
         <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
-        <paper-button on-click="_addContainer">
-          <iron-icon icon="icons:add-circle"></iron-icon>
-          Add Container
-        </paper-button>
-        <paper-button on-click="_addNavigation">
-          <iron-icon icon="icons:add-circle"></iron-icon>
-          Add Navigation
-        </paper-button>
+        <div>
+          <paper-button class="headerActions" on-click="_addContainer">
+            <iron-icon icon="icons:add-circle"></iron-icon>
+            Add Container
+          </paper-button>
+          <paper-button class="headerActions" on-click="_addNavigation">
+            <iron-icon icon="icons:add-circle"></iron-icon>
+            Add Navigation
+          </paper-button>
+        </div>
         <div main-title></div>
         <!-- <paper-icon-button icon="delete"></paper-icon-button>
         <paper-icon-button icon="search"></paper-icon-button>
