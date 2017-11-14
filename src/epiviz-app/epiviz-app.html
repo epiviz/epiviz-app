@@ -3,8 +3,8 @@
 
 <!-- Polymer Elements -->
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<!-- <link rel="import" href="../../bower_components/app-route/app-location.html"> -->
-<!-- <link rel="import" href="../../bower_components/app-route/app-route.html"> -->
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <!-- <link rel="import" href="../../bower_components/iron-icon/iron-icon.html"> -->
@@ -88,13 +88,13 @@
     </style>
 
     <!-- TODO: Use routes int he future for loading workspacs and have a home page -->
-    <!-- <app-location route="{{route}}"></app-location>
+    <app-location route="{{route}}"></app-location>
     <app-route
       route="{{route}}"
-      pattern="/:page"
+      pattern="/:workspace"
       data="{{routeData}}"
       tail="{{subroute}}">
-    </app-route> -->
+    </app-route>
 
     <!-- <iron-media-query query="max-width: 400px" query-matches="{{smallScreen}}"></iron-media-query> -->
 
@@ -122,11 +122,13 @@
         <paper-icon-button icon="close"></paper-icon-button> -->
         <!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
         <epiviz-workspace 
+          id="eWorkspace"
           auth-domain="epiviz-auth.firebaseapp.com"
           database-url="https://epiviz-auth.firebaseio.com/"
           api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw"
           storage-bucket="epiviz-auth.appspot.com"
           messaging-sender-id="688767774580"
+          target-selector="#epivizContent"
         ></epiviz-workspace>
       </app-toolbar>
     </app-header>
@@ -135,24 +137,6 @@
         
     </div>
     <app-drawer id="drawer" swipe-open></app-drawer>
-
-
-
-    <!-- <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-      home view
-      <epiviz-home name="home"></epiviz-home>
-      list view of items in a category
-      <shop-list name="list" route="[[subroute]]" offline="[[offline]]"></shop-list>
-      detail view of one item
-      <shop-detail name="detail" route="[[subroute]]" offline="[[offline]]"></shop-detail>
-      cart view
-      <shop-cart name="cart" cart="[[cart]]" total="[[total]]"></shop-cart>
-      checkout view
-      <shop-checkout name="checkout" cart="[[cart]]" total="[[total]]" route="{{subroute}}"></shop-checkout>
-      <shop-404-warning name="404"></shop-404-warning>
-    </iron-pages> -->
-
-
   </template>
 
   <script>
@@ -165,10 +149,23 @@
       properties: {
       },
 
+      observers: [
+        "_onRouteData(routeData.workspace)"
+      ],
+
+      listeners: {
+      },
+
+      _onRouteData: function(ws) {
+        $("#epivizContent").empty();
+        this.$.eWorkspace.loadWorkSpaceId(ws);
+      },
+
       _addContainer: function() {
         var self = this;
 
         var elem = document.createElement("epiviz-environment");
+        // TODO: Ask user for the location to start the element at.
         elem.setAttribute("chr", "chr11");
         elem.setAttribute("start", 3947953);
         elem.setAttribute("end", 7164991);
@@ -179,12 +176,10 @@
         var self = this;
 
         var elem = document.createElement("epiviz-navigation");
+        // TODO: Ask user for the location to start the element at.
         elem.setAttribute("chr", "chr11");
         elem.setAttribute("start", 3947953);
         elem.setAttribute("end", 7164991);
-        // elem.chr = "chr11";
-        // elem.start = 3947953;
-        // elem.end = 7164991;
         self.$.epivizContent.append(elem);
       }
     });
