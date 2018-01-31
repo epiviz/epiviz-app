@@ -7,15 +7,21 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <!-- <link rel="import" href="../../bower_components/iron-icon/iron-icon.html"> -->
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <!-- <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html"> -->
 
 <!-- Epiviz Components -->
-<link rel="import" href="../../bower_components/epiviz-data-source/epiviz-data-source.html">
+<!-- <link rel="import" href="../../bower_components/epiviz-data-source/epiviz-data-source.html"> -->
 <link rel="import" href="../../bower_components/epiviz-workspace/epiviz-workspace.html">
 <link rel="import" href="../../bower_components/epiviz-charts/epiviz-charts.html">
+
+<!-- <link rel="import" href="../../bower_components/strand/dist/strand-tooltip/strand-tooltip.html"/> -->
+
 
 <!-- default page home -->
 <link rel="import" href="epiviz-home.html">
@@ -38,6 +44,8 @@
       app-toolbar {
         color: #4285f4;
         background-color: #efefef;
+        --app-toolbar-font-size	: 15px;
+        height: auto;
       }
 
       paper-icon-button {
@@ -67,7 +75,6 @@
         border-bottom: 1px solid #ddd;
       }
 
-
       app-drawer {
         --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
         --app-drawer-content-container: {
@@ -76,7 +83,16 @@
       }
 
       #epivizContent {
-        padding-top: 64px;
+        padding-top: 60px;
+      }
+
+      .info {
+        --iron-icon-width: 18px;
+        --iron-icon-height: 18px;
+      }
+
+      paper-tooltip {
+        z-index: 30001;
       }
 
     </style>
@@ -96,17 +112,42 @@
     <!-- TODO: have a UI to actually add this on the fly like select data providers to visualize, 
           update when there's a new python version -->
 
-    <app-header reveals>
+    <app-header style="height: 30px;" fixed>
       <app-toolbar>
         <a href="http://epiviz.github.io" target="_blank"><img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21"></a>          
         <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
+        <paper-menu-button vertical-offset="50">
+          <paper-button class="dropdown-trigger">
+              <span>Add New Regions</span>
+              <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+          </paper-button>
+          <paper-listbox class="dropdown-content">
+            <paper-item id="navBtn" on-click="_addNavigation">
+              <img style="padding-right:5px" height="24px" width="24px" src="../../images/dna-scheme.svg"></img>
+              <span> Genomic Region </span>
+              <iron-icon class="info" id="navIcon" icon="icons:info-outline"></iron-icon>
+              <!-- <strand-tooltip target="#navIcon">
+                <label>Adds a view element to visualize data from a region</label>
+              </strand-tooltip> -->
+              <paper-tooltip for="navIcon">Visualize data from a region</paper-tooltip>
+            </paper-item>
+            <paper-item id="ctnBtn" on-click="_addContainer">
+              <img style="padding-right:5px" height="24px" width="24px" src="../../images/add-window-grid-symbol.svg"></img>
+              <span>Genomic Container</span>
+              <iron-icon class="info" id="ctnIcon" icon="icons:info-outline"></iron-icon>
+              <!-- <strand-tooltip target="#ctnIcon">
+                <label>Adds a view element to visualize data from the entire dataset</label>
+              </strand-tooltip> -->
+              <paper-tooltip for="ctnIcon" position="top">Visualize data from the entire dataset</paper-tooltip>
+            </paper-item>
+          </paper-listbox>
+        </paper-menu-button>
         <paper-button on-click="_addContainer">
           <iron-icon icon="icons:add-circle"></iron-icon>
           Add Container
         </paper-button>
         <paper-button on-click="_addNavigation">
-          <iron-icon icon="icons:add-circle"></iron-icon>
-          Add Navigation
+          <iron-icon icon="av:library-add"></iron-icon> Add New Genomic Region
         </paper-button>
         <div main-title></div>
         <!-- <paper-icon-button icon="delete"></paper-icon-button>
@@ -150,7 +191,7 @@
 
       _onRouteData: function(ws) {
         $("#epivizContent").empty();
-        this.$.eWorkspace.loadWorkSpaceId(ws);
+        // this.$.eWorkspace.loadWorkSpaceId(ws);
       },
 
       _addContainer: function() {
@@ -161,6 +202,7 @@
         elem.setAttribute("chr", "chr11");
         elem.setAttribute("start", 3947953);
         elem.setAttribute("end", 7164991);
+        elem.setAttribute("no-logo", true);
         self.$.epivizContent.append(elem);
       },
 
@@ -172,6 +214,7 @@
         elem.setAttribute("chr", "chr11");
         elem.setAttribute("start", 3947953);
         elem.setAttribute("end", 7164991);
+        elem.setAttribute("no-logo", true);
         self.$.epivizContent.append(elem);
       }
     });

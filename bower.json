@@ -32,6 +32,9 @@
     "iron-flex-layout": "^1.3.7",
     "epiviz-workspace": "epiviz/epiviz-workspace",
     "epiviz-data-source": "epiviz/epiviz-data-source",
-    "epiviz-charts": "epiviz/epiviz-chart"
+    "epiviz-charts": "epiviz/epiviz-chart#epiviz-5",
+    "epiviz-imports": "epiviz/epiviz-imports#epiviz-5",
+    "paper-tooltip": "PolymerElements/paper-tooltip#1.1.4",
+    "strand": "^4.5.0"
   }
 }

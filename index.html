@@ -7,24 +7,29 @@
     <title>Epiviz</title>
     <meta name="description" content="Epiviz">
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">    
+
     <!-- See https://goo.gl/OOhYW5 -->
     <!-- <link rel="manifest" href="/manifest.json"> -->
 
     <script src="/bower_components/webcomponentsjs/webcomponents.js"></script>
-
-    <link rel="import" href="/bower_components/epiviz-data-source/epiviz-data-source.html">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script
+    src="https://code.jquery.com/jquery-1.12.4.js"
+    integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+    crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="bower_components/jquery-collision/js/jquery-collision.js"></script>
     <script src="bower_components/jquery-ui-drag-collide/js/jquery-ui-draggable-collision.js"></script>
     <link rel="import" href="/src/epiviz-app/epiviz-app.html">
+    <link rel="import" href="/bower_components/epiviz-data-source/epiviz-data-source.html">
   </head>
   <body>
 
     <epiviz-data-source 
       provider-type="epiviz.data.WebServerDataProvider" 
       provider-id="umd" 
-      provider-url="http://epiviz.cbcb.umd.edu/data/main.php">
+      provider-url="http://epiviz-dev.cbcb.umd.edu/api/">
+      <!-- provider-url="http://localhost:5000"> -->
     </epiviz-data-source>
     <epiviz-app></epiviz-app>
   </body>
