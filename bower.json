@@ -35,6 +35,7 @@
     "epiviz-charts": "epiviz/epiviz-chart#epiviz-5",
     "epiviz-imports": "epiviz/epiviz-imports#epiviz-5",
     "paper-tooltip": "PolymerElements/paper-tooltip#1.1.4",
-    "strand": "^4.5.0"
+    "strand": "^4.5.0",
+    "paper-datatable": "^0.9.8"
   }
 }
