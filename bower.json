@@ -36,5 +36,13 @@
     "epiviz-imports": "epiviz/epiviz-imports#epiviz-5",
     "paper-tooltip": "PolymerElements/paper-tooltip#1.1.4",
     "strand": "^4.5.0"
+  },
+  "resolutions": {
+    "paper-icon-button": "^1.1.4",
+    "polymer": "^1.9.1",
+    "paper-styles": "^1.1.5",
+    "paper-item": "^1.2.1",
+    "iron-form": "^1.1.4",
+    "epiviz-imports": "epiviz-5"
   }
 }
