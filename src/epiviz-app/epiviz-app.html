@@ -23,7 +23,6 @@
 
 <!-- <link rel="import" href="../../bower_components/strand/dist/strand-tooltip/strand-tooltip.html"/> -->
 
-
 <!-- default page home -->
 <link rel="import" href="epiviz-home.html">
 
@@ -176,8 +175,6 @@
 
       </div>
     </app-header-layout>
-
-
     <app-drawer id="drawer" swipe-open></app-drawer>
   </template>
 
@@ -189,6 +186,11 @@
     Polymer ({
       is : 'epiviz-app',
       properties: {
+        routeWorkspace: {
+          type: String,
+          notify: true,
+          observer: '_onRouteWorkspaceChanged'
+        }
       },
 
       observers: [
@@ -196,6 +198,10 @@
       ],
 
       listeners: {
+      },
+
+      _onRouteWorkspaceChanged: function(newVal, oldVal) {
+        this.set("routeData.workspace", this.routeWorkspace);
       },
 
       _onRouteData: function(ws) {
@@ -208,9 +214,9 @@
 
         var elem = document.createElement("epiviz-environment");
         // TODO: Ask user for the location to start the element at.
-        elem.setAttribute("chr", "chr11");
-        elem.setAttribute("start", 3947953);
-        elem.setAttribute("end", 7164991);
+        // elem.setAttribute("chr", "chr11");
+        // elem.setAttribute("start", 3947953);
+        // elem.setAttribute("end", 7164991);
         elem.setAttribute("no-logo", true);
         self.$.epivizContent.append(elem);
       },
