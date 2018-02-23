@@ -56,14 +56,14 @@
       paper-icon-button + [main-title] {
         margin-left: 24px;
       }
-      
+
       paper-progress {
         display: block;
         width: 100%;
         --paper-progress-active-color: rgba(255, 255, 255, 0.5);
         --paper-progress-container-color: transparent;
       }
-      
+
       app-header {
         @apply --layout-fixed-top;
         color: #fff;
@@ -115,67 +115,69 @@
     <!-- <iron-media-query query="max-width: 400px" query-matches="{{smallScreen}}"></iron-media-query> -->
 
     <!-- default epiviz data provider -->
-    <!-- TODO: have a UI to actually add this on the fly like select data providers to visualize, 
+    <!-- TODO: have a UI to actually add this on the fly like select data providers to visualize,
           update when there's a new python version -->
+    <app-header-layout>
+      <app-header condenses>
+        <app-toolbar>
+          <a href="http://epiviz.github.io" target="_blank"><img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21"></a>
+          <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
+          <paper-menu-button vertical-offset="50">
+            <paper-button class="dropdown-trigger">
+                <span>Add New Regions</span>
+                <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+            </paper-button>
+            <paper-listbox class="dropdown-content">
+              <paper-item id="navBtn" on-click="_addNavigation">
+                <img style="padding-right:5px" height="24px" width="24px" src="../../images/dna-scheme.svg"></img>
+                <span> Genomic Region </span>
+                <iron-icon class="info" id="navIcon" icon="icons:info-outline"></iron-icon>
+                <!-- <strand-tooltip target="#navIcon">
+                  <label>Adds a view element to visualize data from a region</label>
+                </strand-tooltip> -->
+                <paper-tooltip for="navIcon">Visualize data from a region</paper-tooltip>
+              </paper-item>
+              <paper-item id="ctnBtn" on-click="_addContainer">
+                <img style="padding-right:5px" height="24px" width="24px" src="../../images/add-window-grid-symbol.svg"></img>
+                <span>Genomic Container</span>
+                <iron-icon class="info" id="ctnIcon" icon="icons:info-outline"></iron-icon>
+                <!-- <strand-tooltip target="#ctnIcon">
+                  <label>Adds a view element to visualize data from the entire dataset</label>
+                </strand-tooltip> -->
+                <paper-tooltip for="ctnIcon" position="top">Visualize data from the entire dataset</paper-tooltip>
+              </paper-item>
+            </paper-listbox>
+          </paper-menu-button>
 
-    <app-header condenses>
-      <app-toolbar>
-        <a href="http://epiviz.github.io" target="_blank"><img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21"></a>          
-        <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
-        <paper-menu-button vertical-offset="50">
-          <paper-button class="dropdown-trigger">
-              <span>Add New Regions</span>
-              <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+          <paper-button on-click="_addContainer">
+            <iron-icon icon="icons:add-circle"></iron-icon>
+            Add Container
           </paper-button>
-          <paper-listbox class="dropdown-content">
-            <paper-item id="navBtn" on-click="_addNavigation">
-              <img style="padding-right:5px" height="24px" width="24px" src="../../images/dna-scheme.svg"></img>
-              <span> Genomic Region </span>
-              <iron-icon class="info" id="navIcon" icon="icons:info-outline"></iron-icon>
-              <!-- <strand-tooltip target="#navIcon">
-                <label>Adds a view element to visualize data from a region</label>
-              </strand-tooltip> -->
-              <paper-tooltip for="navIcon">Visualize data from a region</paper-tooltip>
-            </paper-item>
-            <paper-item id="ctnBtn" on-click="_addContainer">
-              <img style="padding-right:5px" height="24px" width="24px" src="../../images/add-window-grid-symbol.svg"></img>
-              <span>Genomic Container</span>
-              <iron-icon class="info" id="ctnIcon" icon="icons:info-outline"></iron-icon>
-              <!-- <strand-tooltip target="#ctnIcon">
-                <label>Adds a view element to visualize data from the entire dataset</label>
-              </strand-tooltip> -->
-              <paper-tooltip for="ctnIcon" position="top">Visualize data from the entire dataset</paper-tooltip>
-            </paper-item>
-          </paper-listbox>
-        </paper-menu-button>
+          <paper-button on-click="_addNavigation">
+            <iron-icon icon="av:library-add"></iron-icon> Add New Genomic Region
+          </paper-button>
+          <div main-title></div>
+          <!-- <paper-icon-button icon="delete"></paper-icon-button>
+          <paper-icon-button icon="search"></paper-icon-button>
+          <paper-icon-button icon="close"></paper-icon-button> -->
+          <!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
+          <epiviz-workspace
+            id="eWorkspace"
+            auth-domain="epiviz-auth.firebaseapp.com"
+            database-url="https://epiviz-auth.firebaseio.com/"
+            api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw"
+            storage-bucket="epiviz-auth.appspot.com"
+            messaging-sender-id="688767774580"
+            target-selector="#epivizContent"
+          ></epiviz-workspace>
+        </app-toolbar>
+      </app-header>
+      <div id="epivizContent">
 
-        <paper-button on-click="_addContainer">
-          <iron-icon icon="icons:add-circle"></iron-icon>
-          Add Container
-        </paper-button>
-        <paper-button on-click="_addNavigation">
-          <iron-icon icon="av:library-add"></iron-icon> Add New Genomic Region
-        </paper-button>
-        <div main-title></div>
-        <!-- <paper-icon-button icon="delete"></paper-icon-button>
-        <paper-icon-button icon="search"></paper-icon-button>
-        <paper-icon-button icon="close"></paper-icon-button> -->
-        <!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
-        <epiviz-workspace 
-          id="eWorkspace"
-          auth-domain="epiviz-auth.firebaseapp.com"
-          database-url="https://epiviz-auth.firebaseio.com/"
-          api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw"
-          storage-bucket="epiviz-auth.appspot.com"
-          messaging-sender-id="688767774580"
-          target-selector="#epivizContent"
-        ></epiviz-workspace>
-      </app-toolbar>
-    </app-header>
+      </div>
+    </app-header-layout>
 
-    <div id="epivizContent">
-        
-    </div>
+
     <app-drawer id="drawer" swipe-open></app-drawer>
   </template>
 
