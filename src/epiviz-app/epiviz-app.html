@@ -33,7 +33,8 @@
         display: block;
       }
 
-      html, body {
+      html,
+      body {
         margin: 0;
         font-family: 'Roboto', 'Noto', sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -44,7 +45,7 @@
       app-toolbar {
         color: #4285f4;
         background-color: #efefef;
-        --app-toolbar-font-size	: 15px;
+        --app-toolbar-font-size: 15px;
         height: auto;
       }
 
@@ -52,7 +53,7 @@
         --paper-icon-button-ink-color: white;
       }
 
-      paper-icon-button + [main-title] {
+      paper-icon-button+[main-title] {
         margin-left: 24px;
       }
 
@@ -68,7 +69,8 @@
         color: #fff;
         --app-header-background-rear-layer: {
           background-color: #ef6c00;
-        };
+        }
+        ;
       }
 
       app-header:not([shadow]) {
@@ -82,8 +84,7 @@
         }
       }
 
-      #epivizContent {
-      }
+      #epivizContent {}
 
       .info {
         --iron-icon-width: 18px;
@@ -103,11 +104,7 @@
 
     <!-- TODO: Use routes in the future for loading workspaces and have a home page -->
     <app-location route="{{route}}"></app-location>
-    <app-route
-      route="{{route}}"
-      pattern="/:workspace"
-      data="{{routeData}}"
-      tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/:workspace" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!-- <iron-media-query query="max-width: 400px" query-matches="{{smallScreen}}"></iron-media-query> -->
@@ -118,12 +115,14 @@
     <app-header-layout>
       <app-header condenses>
         <app-toolbar>
-          <a href="http://epiviz.github.io" target="_blank"><img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21"></a>
+          <a href="http://epiviz.github.io" target="_blank">
+            <img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21">
+          </a>
           <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
           <paper-menu-button vertical-offset="50">
             <paper-button class="dropdown-trigger">
-                <span>Add New Regions</span>
-                <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+              <span>Add New Regions</span>
+              <iron-icon icon="icons:arrow-drop-down"></iron-icon>
             </paper-button>
             <paper-listbox class="dropdown-content">
               <paper-item id="navBtn" on-click="_addNavigation">
@@ -146,7 +145,7 @@
               </paper-item>
             </paper-listbox>
           </paper-menu-button>
-<!-- 
+          <!-- 
           <paper-button on-click="_addContainer">
             <iron-icon icon="icons:add-circle"></iron-icon>
             Add Container
@@ -159,16 +158,9 @@
           <paper-icon-button icon="search"></paper-icon-button>
           <paper-icon-button icon="close"></paper-icon-button> -->
           <!-- <paper-progress value="10" indeterminate bottom-item></paper-progress> -->
-          <epiviz-workspace
-            id="eWorkspace"
-            auth-domain="epiviz-auth.firebaseapp.com"
-            database-url="https://epiviz-auth.firebaseio.com/"
-            api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw"
-            storage-bucket="epiviz-auth.appspot.com"
-            messaging-sender-id="688767774580"
-            target-selector="#epivizContent"
-            workspace-id="{{routeWorkspace}}"
-          ></epiviz-workspace>
+          <epiviz-workspace id="eWorkspace" auth-domain="epiviz-auth.firebaseapp.com" database-url="https://epiviz-auth.firebaseio.com/"
+            api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw" storage-bucket="epiviz-auth.appspot.com" messaging-sender-id="688767774580"
+            target-selector="#epivizContent" workspace-id="{{routeWorkspace}}"></epiviz-workspace>
         </app-toolbar>
       </app-header>
       <div id="epivizContent">
@@ -183,8 +175,8 @@
      * @customElement
      * @polymer
      */
-    Polymer ({
-      is : 'epiviz-app',
+    Polymer({
+      is: 'epiviz-app',
       properties: {
         routeWorkspace: {
           type: String,
@@ -200,18 +192,18 @@
       listeners: {
       },
 
-      _onRouteWorkspaceChanged: function(newVal, oldVal) {
+      _onRouteWorkspaceChanged: function (newVal, oldVal) {
         this.set("routeData.workspace", this.routeWorkspace);
       },
 
-      _onRouteData: function(ws) {
+      _onRouteData: function (ws) {
         // $("#epivizContent").empty();
         this.$.eWorkspace.triggerReload = true;
         this.$.eWorkspace.set("workspaceId", ws);
         // this.$.eWorkspace.loadWorkSpaceId(ws);
       },
 
-      _addContainer: function() {
+      _addContainer: function () {
         var self = this;
 
         var elem = document.createElement("epiviz-environment");
@@ -220,10 +212,10 @@
         // elem.setAttribute("start", 3947953);
         // elem.setAttribute("end", 7164991);
         elem.setAttribute("no-logo", true);
-        self.$.epivizContent.append(elem);
+        self.$.epivizContent.appendChild(elem);
       },
 
-      _addNavigation: function() {
+      _addNavigation: function () {
         var self = this;
 
         var elem = document.createElement("epiviz-navigation");
@@ -233,7 +225,7 @@
         elem.setAttribute("start", 10084603);
         elem.setAttribute("end", 10312571);
         elem.setAttribute("no-logo", true);
-        self.$.epivizContent.append(elem);
+        self.$.epivizContent.appendChild(elem);
       }
     });
   </script>
