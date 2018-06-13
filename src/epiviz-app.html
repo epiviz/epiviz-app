@@ -1,0 +1,496 @@
+<!-- Polymer Dependency -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!-- Polymer Elements -->
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<!-- Epiviz Components -->
+<link rel="import" href="../bower_components/epiviz-data-source/epiviz-data-source.html">
+<link rel="import" href="../bower_components/epiviz-charts/epiviz-charts.html">
+<link rel="import" href="../bower_components/epiviz-workspace/epiviz-workspace.html">
+
+
+<!-- default page home -->
+
+<dom-module id="epiviz-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            app-toolbar {
+                color: #4285f4;
+                background-color: #efefef;
+                --app-toolbar-font-size: 15px;
+                height: auto;
+            }
+
+            paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            paper-icon-button+[main-title] {
+                margin-left: 24px;
+            }
+
+            paper-progress {
+                display: block;
+                width: 100%;
+                --paper-progress-active-color: rgba(255, 255, 255, 0.5);
+                --paper-progress-container-color: transparent;
+            }
+
+            app-header {
+                @apply --layout-fixed-top;
+                color: #fff;
+                --app-header-background-rear-layer: {
+                    background-color: #ef6c00;
+                }
+                ;
+            }
+
+            app-header:not([shadow]) {
+                border-bottom: 1px solid #ddd;
+            }
+
+            app-drawer {
+                --app-drawer-scrim-background: rgba(0, 0, 100, 0.8);
+                --app-drawer-content-container: {
+                    background-color: #B0BEC5;
+                }
+            }
+
+            .info {
+                --iron-icon-width: 18px;
+                --iron-icon-height: 18px;
+            }
+
+            .headerActions {
+                font-size: 15px;
+                padding-left: 0px;
+                float: left;
+            }
+
+            #intro {
+                width: 60%;
+                height: 75%;
+                display: grid;
+                grid-template-rows: 50px auto 75px;
+                grid-template-columns: auto;
+                grid-row-gap: 5px;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: auto;
+                grid-column-gap: 10px;
+                grid-row-gap: 10px;
+            }
+
+            .buttons {
+                margin-left: 20px;
+                margin-right: 20px;
+                border-top: 1px solid black;
+            }
+
+            paper-card {
+                display: grid;
+                grid-template-rows: 100px auto 50px;
+                /* --paper-card-header-color: #4285f4; */
+                --paper-card-header-image: {
+                    opacity: 0.25;
+                    height: 100px;
+                }
+                --paper-card-header-image-text: {
+                    top: 25%;
+                    left: 25%;
+                    /* font-weight: bold; */
+                }
+            }
+
+            .new-workspace {
+                align-self: center;
+                justify-self: center;
+                border: 1px solid black;
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            paper-tabs {
+                background-color: #f1f1f1;
+                color: #4285f4;
+                --paper-tabs-selection-bar-color: red;
+            }
+
+            .tab-container {
+                overflow: auto;
+            }
+
+            .info {
+                padding-left: 5px;
+            }
+
+            #appHeader {
+                background-color: #e0e2e2;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            #appHeader .flexChild {
+                display: flex;
+                align-items: center;
+            }
+        </style>
+
+        <!-- TODO: Use routes in the future for loading workspaces and have a home page -->
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/:workspace" data="{{routeData}}" tail="{{subroute}}">
+        </app-route>
+
+        <!-- <iron-media-query query="max-width: 400px" query-matches="{{smallScreen}}"></iron-media-query> -->
+
+        <!-- default epiviz data provider -->
+        <epiviz-data-source provider-type="epiviz.data.WebServerDataProvider" provider-id="umd" provider-url="http://epiviz-dev.cbcb.umd.edu/api/">
+        </epiviz-data-source>
+
+        <!-- TODO: have a UI to actually add this on the fly like select data providers to visualize,
+          update when there's a new python version -->
+        <div id="appHeader">
+            <div class="flexChild">
+                <a href="http://epiviz.github.io" target="_blank">
+                    <img src="../../images/epiviz_4_logo_medium.png" alt="Epiviz" width="100" height="21">
+                </a>
+                <!-- <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button> -->
+                <paper-menu-button vertical-offset="50">
+                    <paper-button slot="dropdown-trigger">
+                        <span>Add New Panel</span>
+                        <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+                    </paper-button>
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item id="navBtn" on-click="_addNavigation">
+                            <img style="padding-right:5px" height="24px" width="24px" src="../../images/dna-scheme.svg"></img>
+                            <span> Genomic Region </span>
+                            <iron-icon class="info" id="navIcon" icon="icons:info-outline"></iron-icon>
+                            <paper-tooltip for="navIcon">Visualize data from a region</paper-tooltip>
+                        </paper-item>
+                        <paper-item id="ctnBtn" on-click="_addContainer">
+                            <img style="padding-right:5px" height="24px" width="24px" src="../../images/add-window-grid-symbol.svg"></img>
+                            <span>Genomic Wide</span>
+                            <iron-icon class="info" id="ctnIcon" icon="icons:info-outline"></iron-icon>
+                            <paper-tooltip for="ctnIcon" position="top">Visualize data from the entire dataset</paper-tooltip>
+                        </paper-item>
+                    </paper-listbox>
+                </paper-menu-button>
+            </div>
+            <div class="flexChild">
+                <epiviz-workspace id="eWorkspace" auth-domain="epiviz-auth.firebaseapp.com" database-url="https://epiviz-auth.firebaseio.com/"
+                    api-key="AIzaSyAsys0gDGLxQ2H7XNYrvaf9OMkaAK1hfCw" storage-bucket="epiviz-auth.appspot.com" messaging-sender-id="688767774580"
+                    target-selector="[[_targetSelector]]" workspace-id="{{routeWorkspace}}"></epiviz-workspace>
+                <a href="http://epiviz.github.io" tabindex="-1" target="_blank">
+                    <paper-icon-button alt="Epiviz homepage" icon="icons:help"></paper-icon-button>
+                </a>
+                <paper-icon-button alt="Intro screen" on-tap="_openIntro" icon="icons:info"></paper-icon-button>
+            </div>
+        </div>
+        <div id="epivizContent"></div>
+
+        <paper-dialog id="intro" modal>
+            <h2 style="text-align:center; color: #4285f4">UMD Epiviz2 Browser</h2>
+            <div class="tab-container">
+                <paper-tabs selected="{{tabselected}}">
+                    <paper-tab>About</paper-tab>
+                    <paper-tab>Software and library availability </paper-tab>
+                </paper-tabs>
+
+                <iron-pages selected="{{tabselected}}">
+                    <div class="dialog-content">
+                        <br>
+                        <p>
+                            <strong style="font-size:16px;">Epiviz2</strong> is an interactive visualization tool for functional genomics data. It supports
+                            genome navigation like other genome browsers, but allows multiple visualizations of data within
+                            genomic regions using scatterplots, heatmaps, line tracks etc.. This instance of Epiviz2 contains
+                            data from the
+                            <strong style="font-size:16px;">NIH Roadmap Epigenomics (
+                                <a href="https://www.nature.com/articles/nature14248">Consortium et al., 2015</a>)</strong> project. The NIH Roadmap Epigenomics Mapping Consortium
+                            leverages next-generation sequencing technologies to map DNA methylation, histone modifications,
+                            chromatin accessibility and small RNA transcripts in tissues selected to represent the normal
+                            counterparts of tissues and organ systems frequently involved in human disease. This instance
+                            of the roadmap database contains DNA methylation, RNA seq, and histone modification (for markers:
+                            h3k9ac, h3k9me3, h3k27ac, h3k27me3) fold change and peak data for seven different tissue types
+                            – Breast Myoepithelial cells, Brain Hippocampus Middle, Lung, Liver, Sigmoid Colon, Pancreas
+                            and Esophagus.
+                        </p>
+                        <h4>Choose an Workspace: </h4>
+                        <div class="grid">
+                            <paper-card heading="METHYLATION WORKSPACE" image="/images/methyl.png" alt="Methylation Workspace">
+                                <div class="card-content">
+                                    This workspace visualizes Methylation data for
+                                    <strong>`Sigmoid Colon`</strong> and
+                                    <strong>`Esophagus`</strong> tissues as line track.
+                                    <br>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div class="card-actions">
+                                    <paper-button on-click="methylWorkspace">Open Workspace</paper-button>
+                                </div>
+                            </paper-card>
+
+                            <paper-card heading="CHIPSEQ WORKSPACE" image="/images/chipseq.png" alt="ChipSeq Workspace">
+                                <div class="card-content">
+                                    This workspace visualizes ChipSeq fold change data as line track and peaks (broad, gapped and narrow) as stacked blocks track
+                                    for
+                                    <strong>`Sigmoid Colon`</strong> and
+                                    <strong>`Esophagus`</strong> tissues for
+                                    <strong>H3K27AC</strong> histone marker.
+                                </div>
+                                <div class="card-actions">
+                                    <paper-button on-click="chipseqWorkspace">Open Workspace</paper-button>
+                                </div>
+                            </paper-card>
+
+                            <div class="new-workspace">
+                                <iron-icon icon="icons:add-box" width=370 height=100></iron-icon>
+                                <paper-button on-click="paperWorkspace">New Workspace</paper-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dialog-content">
+                        <br>
+                        <p>
+                            This instance of the Epiviz2 browser is built using the Epiviz Component Library, an open source, reusable and extensibly
+                            data visualization library and application framework for genomic data sets. The components used
+                            to develop this application are available at -
+                            <ul>
+                                <li>
+                                    <a target="_blank" href="http://github.com/epiviz/epiviz-chart">epiviz charts</a>
+                                </li>
+                                <li>
+                                    <a target="_blank" href="http://github.com/epiviz/epiviz-data-source">epiviz datasource</a>
+                                </li>
+                                <li>
+                                    <a target="_blank" href="http://github.com/epiviz/epiviz-workspace">epiviz workspace</a>
+                                </li>
+                            </ul>
+                        </p>
+                        <p>
+                            The code for this app developed using the libraries above is available at
+                            <a target="_blank" href="http://github.com/epiviz/epiviz-app">GitHub</a>
+                        </p>
+                    </div>
+                </iron-pages>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+
+        // Gesture events like tap and track generated from touch will not be
+        // preventable, allowing for better scrolling performance.
+        Polymer.setPassiveTouchGestures(true);
+
+        class EpivizApp extends Polymer.Element {
+            static get is() { return 'epiviz-app'; }
+
+            static get properties() {
+                return {
+                    routeWorkspace: {
+                        type: String,
+                        notify: true,
+                        observer: '_onRouteWorkspaceChanged'
+                    },
+
+                    showIntro: {
+                        type: Boolean,
+                        notify: true,
+                        value: function () {
+                            return true;
+                        }
+                    },
+
+                    tabselected: {
+                        type: Number,
+                        notify: true,
+                        value: function () {
+                            return 0;
+                        }
+                    },
+
+                    _targetSelector: {
+                        type: Object
+                    },
+
+                    routeData: {
+                        type: Object,
+                        notify: true
+                    },
+                    subroute: {
+                        type: Object,
+                        notify: true
+                    },
+                    // This shouldn't be neccessary, but the Analyzer isn't picking up
+                    // Polymer.Element#rootPath
+                    rootPath: String,
+                };
+            }
+
+            static get observers() {
+                return [
+                    "_onRouteData(routeData.workspace)"
+                ];
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.$.intro.open();
+                this._targetSelector = document.querySelector("epiviz-app").shadowRoot.querySelector("#epivizContent");
+            }
+
+            _onRouteWorkspaceChanged(newVal, oldVal) {
+                this.set("routeData.workspace", this.routeWorkspace);
+            }
+
+            _onRouteData(ws) {
+                if (ws != undefined && ws != "") {
+                    this.$.eWorkspace.triggerReload = true;
+                    this.$.eWorkspace.set("workspaceId", ws);
+                }
+            }
+
+            _openIntro() {
+                this.$.intro.open();
+            }
+
+            _addContainer() {
+                var self = this;
+
+                var elem = document.createElement("epiviz-environment");
+                // TODO: Ask user for the location to start the element at.
+                elem.setAttribute("no-logo", true);
+                self.$.epivizContent.appendChild(elem);
+            }
+
+            _addNavigation() {
+                var self = this;
+
+                var elem = document.createElement("epiviz-navigation");
+                // TODO: Ask user for the location to start the element at.
+                // current location C3P1 gene
+                elem.setAttribute("chr", "chr19");
+                elem.setAttribute("start", 10084603);
+                elem.setAttribute("end", 10312571);
+                elem.setAttribute("no-logo", true);
+                self.$.epivizContent.appendChild(elem);
+            }
+
+            methylWorkspace() {
+
+                this.$.intro.close();
+                $("#epivizContent").empty();
+
+                var self = this;
+                var elem = document.createElement("epiviz-navigation");
+                // TODO: Ask user for the location to start the element at.
+                // current location C3P1 gene
+                elem.setAttribute("chr", "chr11");
+                elem.setAttribute("start", 3947953);
+                elem.setAttribute("end", 7164991);
+                elem.setAttribute("no-logo", true);
+                self.$.epivizContent.appendChild(elem);
+
+                var dataManagerElem = this.shadowRoot.querySelector('epiviz-data-source');
+
+                // add a genes track
+                var data = dataManagerElem.measurementSet.subset(function (m) { return m.defaultChartType() == "Genes Track" });
+                var measurements = data.subset(function (m) { return m.datasourceGroup() === "genes" });
+                var genes_track = document.createElement("epiviz-genes-track");
+                genes_track.slot = "charts";
+                genes_track.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(genes_track);
+
+                // add scatter plot - colon vs esophagus 
+                var data = dataManagerElem.measurementSet.subset(function (m) { return m.datasourceGroup() == "roadmap_wgbs"; });
+                var measurements = data.subset(function (m) { return (m.name() === "Sigmoid Colon" || m.name() === "Esophagus") });
+                var scatter_plot = document.createElement("epiviz-scatter-plot");
+                scatter_plot.slot = "charts";
+                scatter_plot.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(scatter_plot);
+
+                // add line track - colon vs esophagus
+                var data = dataManagerElem.measurementSet.subset(function (m) { return m.datasourceGroup() == "roadmap_wgbs"; });
+                var measurements = data.subset(function (m) { return (m.name() === "Sigmoid Colon" || m.name() === "Esophagus") });
+                var lines_track = document.createElement("epiviz-line-track");
+                lines_track.slot = "charts";
+                lines_track.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(lines_track);
+            }
+
+            chipseqWorkspace() {
+                var self = this;
+                $("#epivizContent").empty();
+
+                self.$.intro.close();
+
+                var elem = document.createElement("epiviz-navigation");
+                // TODO: Ask user for the location to start the element at.
+                // current location C3P1 gene
+                elem.setAttribute("chr", "chr11");
+                elem.setAttribute("start", 4047953);
+                elem.setAttribute("end", 4148953);
+                elem.setAttribute("no-logo", true);
+                self.$.epivizContent.appendChild(elem);
+
+                var dataManagerElem = this.shadowRoot.querySelector('epiviz-data-source');
+
+                // add a genes track
+                var data = dataManagerElem.measurementSet.subset(function (m) { return m.defaultChartType() == "Genes Track" });
+                var measurements = data.subset(function (m) { return m.datasourceGroup() === "genes" });
+                var genes_track = document.createElement("epiviz-genes-track");
+                genes_track.slot = "charts";
+                genes_track.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(genes_track);
+
+                // add chipseqPeaks - h3k27ac - signmoid Colon & Esophagus - narrow, broad and gapped peaks
+                var data = dataManagerElem.measurementSet
+                var measurements = data.subset(function (m) { return ["AH30455", "AH30670", "AH31454", "AH31618", "AH29434", "AH29632"].includes(m.id()); });
+                var sblocks_track = document.createElement("epiviz-stacked-blocks-track");
+                sblocks_track.slot = "charts";
+                sblocks_track.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(sblocks_track);
+
+
+                // add line track - h3k27ac, colon & esophagus
+                var data = dataManagerElem.measurementSet
+                var measurements = data.subset(function (m) { return m.id() == "AH33645" || m.id() == "AH32794" });
+                var lines_track = document.createElement("epiviz-line-track");
+                lines_track.slot = "charts";
+                lines_track.setAttribute("measurements", JSON.stringify(measurements.raw()));
+                Polymer.dom(elem).appendChild(lines_track);
+            }
+
+            paperWorkspace() {
+                $("#epivizContent").empty();
+                this.$.intro.close();
+            }
+        }
+
+        customElements.define(EpivizApp.is, EpivizApp);
+    </script>
+</dom-module>
